@@ -10,7 +10,7 @@ from sklearn.model_selection import TimeSeriesSplit, cross_val_score
 import sqlite3
 import os
 from dotenv import load_dotenv
-
+import joblib
 load_dotenv()
 
 # my api token
@@ -86,6 +86,11 @@ with open('get_features.sql', 'r') as file:
     query = file.read()
 
 df_features = pd.read_sql_query(query, conn)
+
+
+df_features.to_sql("matches_features", conn, if_exists="replace", index=False)
+print("features succesfully saved to SQLITE as 'match_features'")
+
 conn.close()
 
 
@@ -113,15 +118,8 @@ classifier.fit(X_train, y_train)
 y_pred = classifier.predict(X_test)
 # print(y_pred)
 # print(y_test)
-
-
-# count = 0
-# for i, prob in enumerate(y_pred):
-# print(
-#   f"Sample {i+1}: Class 0 PRobability = {prob[0]:.4f}, Class 1 Probability = {prob[1]:.4f}, class 2 prbability: {prob[2]:.4f}")
-# count += 1
-# if count > 5:
-#   break
+joblib.dump(classifier, "prem_model.joblib")
+print("Model succesfuly saved to prem_model.joblib \n")
 
 
 accuracy = accuracy_score(y_test, y_pred)

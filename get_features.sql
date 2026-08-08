@@ -1,8 +1,11 @@
 WITH match_features AS (
     SELECT 
         id, 
-        utcDate,"homeTeam.id" AS home_team_id, 
+        utcDate,
+        "homeTeam.id" AS home_team_id, 
         "awayTeam.id" AS away_team_id, 
+        "homeTeam.name" AS home_name,
+        "awayTeam.name" AS away_name,
         
 
 
@@ -78,6 +81,8 @@ SELECT id,
     Home_Team_Form,
     Away_Team_Form,
     target,
+    home_name,
+    away_name,
     
     -- Differences
     (Home_Team_AvgGoals - Away_Team_AvgGoals) AS goal_attack_diff,

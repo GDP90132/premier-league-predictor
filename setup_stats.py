@@ -1,6 +1,6 @@
 import sqlite3
 import pandas as pd
-
+DB_PATH = "premier_league.db"
 
 csv_file = "/Users/gill/premierlague_project/premier_league_complete_stats_until35thGameDayOnSeason2025-26.csv"
 print("Reading kaggle player stats")
@@ -48,5 +48,32 @@ def get_team_roster(team_name):
     return df
 
 
-user = input("what is the name of the team: ").strip()
-ask = get_team_roster(user)
+def get_player_stats(player_name):
+    conn = sqlite3.connect(DB_PATH)
+    # Using ? parameterization handles accents, apostrophes, and special characters safely
+    query = """
+        SELECT player_name, team_name, position, goals, assists, appearances 
+        FROM player_stats 
+        WHERE player_name LIKE ?;
+    """
+    # Using % for flexible search (e.g., searching "Saka" matches "Bukayo Saka")
+    df = pd.read_sql_query(query, conn, params=(f"%{player_name}%",))
+    conn.close()
+
+    if df.empty:
+        raise ValueError(f"No player found matching '{player_name}'.")
+    return df
+
+
+def get_all_player_names():
+    conn = sqlite3.connect(DB_PATH)
+    query = "SELECT DISTINCT player_name FROM player_stats WHERE player_name IS NOT NULL ORDER BY player_name;"
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+    return df["player_name"].tolist()
+
+
+if __name__ == "__main__":
+    user = input("what is the name of the team: ").strip()
+    ask = get_team_roster(user)
+    print(ask)

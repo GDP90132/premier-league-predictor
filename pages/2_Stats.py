@@ -7,7 +7,7 @@ from setup_stats import (
     get_top_players_assists,
     get_team_roster,
     get_player_stats,
-    get_all_player_names,  # New helper function imported
+    get_all_player_names,
 )
 
 st.set_page_config(page_title="Premier League Stats",
@@ -38,7 +38,10 @@ if view_mode == "Player Info":
                 df = get_top_players_goals()
             else:
                 df = get_top_players_assists()
-                st.dataframe(df, width="stretch", hide_index=True)
+
+            # Moved out of the else block so both Goals and Assists get rendered
+            st.dataframe(df, use_container_width=True, hide_index=True)
+
         except Exception as e:
             st.error(f"Error fetching leaderboard: {e}")
 
@@ -46,10 +49,8 @@ if view_mode == "Player Info":
         st.subheader("Player Search")
 
         try:
-            # Fetch all player names for the autocomplete dropdown
             all_players = get_all_player_names()
 
-            # Selectbox with search auto-complete functionality
             selected_player = st.selectbox(
                 "Type or select a player name:",
                 options=all_players,

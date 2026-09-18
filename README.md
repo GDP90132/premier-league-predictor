@@ -41,9 +41,12 @@ A multi-page Streamlit app featuring:
 |-------|-----------|
 | **App / UI** | Streamlit |
 | **Data Processing** | Python, Pandas, NumPy |
-| **Machine Learning** | scikit-learn |
+| **Database** | SQLite |
+| **Data Collection** | Python `requests` (public football data APIs) |
+| **Machine Learning** | scikit-learn (Random Forest Classifier) |
+| **Model Validation** | Time-series cross-validation (`TimeSeriesSplit`) |
 | **Model Serialization** | joblib |
-| **Data Storage** | CSV / local dataset files |
+| **Config** | Environment variables via `python-dotenv` |
 
 ---
 
@@ -78,7 +81,13 @@ pandas
 numpy
 joblib
 scikit-learn
+requests
+python-dotenv
 ```
+
+**4. Set up environment variables (if using an external API)**
+
+Create a `.env` file in the project root for any API keys or config values (e.g. `FOOTBALL_API_KEY=your_key_here`), loaded via `python-dotenv`.
 
 **3. Add the dataset**
 
@@ -102,13 +111,15 @@ Then open the local URL Streamlit prints in your terminal (typically `http://loc
 premier-league-predictor/
 ├── app.py                      # Main Streamlit application
 ├── model/
-│   ├── train_model.py          # Model training script
+│   ├── train_model.py          # Model training script (RandomForestClassifier + TimeSeriesSplit)
 │   └── model.pkl                # Serialized model (joblib)
 ├── data/
-│   ├── raw/                    # Raw match/player datasets
-│   └── processed/              # Cleaned, feature-engineered data
+│   ├── fetch_data.py            # Pulls match/player data via requests, stores in SQLite
+│   ├── matches.db                # SQLite database of match/player data
+│   └── processed/               # Cleaned, feature-engineered data
 ├── utils/
 │   └── data_processing.py      # Data cleaning and feature engineering functions
+├── .env                          # API keys / config (not committed)
 ├── requirements.txt
 └── README.md
 ```
@@ -117,8 +128,10 @@ premier-league-predictor/
 
 ## Model Details
 
-- **Algorithm**: scikit-learn classifier (specify which — e.g. Random Forest, Logistic Regression)
-- **Features**: recent form, head-to-head history, goal differential, home/away advantage
+- **Algorithm**: Random Forest Classifier (scikit-learn)
+- **Validation**: Time-series cross-validation (`TimeSeriesSplit`) to respect chronological order of matches, plus a held-out train/test split for final evaluation
+- **Metrics**: Accuracy score and confusion matrix used to evaluate prediction quality
+- **Features**: recent form, head-to-head history, goal differential, home/away advantage (specify your actual engineered features here)
 - **Output**: win/draw/loss probability distribution for a given matchup
 
 ---

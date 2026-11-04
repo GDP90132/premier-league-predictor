@@ -61,9 +61,6 @@ def fetch_league_info(league_code):
     print(f"succes!, fetching has been completed for {league_code}")
 
 
-# call the function to requests api data
-# fetch_league_info('PL')
-
 # set up rollign data for tha matches file to then get the past statsistic
 df_matches = pd.read_csv('PL_matches.csv')
 
@@ -116,8 +113,7 @@ classifier = RandomForestClassifier(
     n_estimators=100, max_depth=4, min_samples_leaf=5, random_state=1)
 classifier.fit(X_train, y_train)
 y_pred = classifier.predict(X_test)
-# print(y_pred)
-# print(y_test)
+
 joblib.dump(classifier, "prem_model.joblib")
 print("Model succesfuly saved to prem_model.joblib \n")
 
@@ -130,9 +126,3 @@ print(f"Accuracy: {accuracy * 100:.2f}%")
 tscv = TimeSeriesSplit(n_splits=5)
 scores = cross_val_score(classifier, X, y, cv=tscv)
 print(f"5 fold cross val scores: {scores}")
-
-
-# improve accuracy by ading more feature !!!
-# xG feature , Elo rating , player avaibility and sqaud depth., home advantage, fatigue , fixutre congestion
-
-# add more features .

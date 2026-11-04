@@ -1,13 +1,27 @@
 import os
 from contextlib import contextmanager
+
 import numpy as np
-from psycopg2.extras import Json, execute_values
 import pandas as pd
 import psycopg2
 from dotenv import load_dotenv
+from psycopg2.extras import Json, execute_values
 
 load_dotenv("api.env")
 
+MATCH_COLS = [
+    "match_id", "div", "league", "season", "match_date", "home_team", "away_team",
+    "home_goals", "away_goals", "result", "ht_home_goals", "ht_away_goals", "ht_result",
+    "home_shots", "away_shots", "home_sot", "away_sot", "home_corners", "away_corners",
+    "home_fouls", "away_fouls", "home_yellows", "away_yellows", "home_reds", "away_reds",
+    "b365_home", "b365_draw", "b365_away",
+]
+TEXT_COLS = {"match_id", "div", "league", "season", "home_team", "away_team",
+             "result", "ht_result", "match_date"}
+ODDS_COLS = {"b365_home", "b365_draw", "b365_away"}
+
+
+# ---------- connection ----------
 
 def _url(pooled: bool) -> str:
     """Pick the connection string. Pooled is for the API/app, direct is for setup and bulk loads."""
@@ -39,7 +53,7 @@ def query_df(sql: str, params=None, pooled: bool = False) -> pd.DataFrame:
         return pd.DataFrame(cur.fetchall(), columns=cols)
 
 
-# ---------- queries ----------
+# ---------- reading ----------
 
 def get_matches_for_features() -> pd.DataFrame:
     """All matches, with the same column names the CSV had, so features.py barely changes."""
@@ -75,6 +89,21 @@ def get_teams(league: str | None = None, pooled: bool = True) -> list[str]:
     return query_df(sql, params, pooled)["home_team"].tolist()
 
 
+def get_current_teams(league: str, days: int = 150, pooled: bool = True) -> list[str]:
+    """Teams in a league that have played in the last `days` days."""
+    sql = """
+        SELECT DISTINCT team FROM (
+            SELECT home_team AS team FROM matches
+            WHERE league = %s AND match_date > current_date - %s
+            UNION
+            SELECT away_team AS team FROM matches
+            WHERE league = %s AND match_date > current_date - %s
+        ) t
+        ORDER BY team
+    """
+    return query_df(sql, (league, days, league, days), pooled)["team"].tolist()
+
+
 def get_recent_matches(team: str, n: int = 10, pooled: bool = True) -> pd.DataFrame:
     """A team's last n matches (home or away), newest first."""
     sql = """
@@ -92,23 +121,11 @@ def get_latest_match_date(pooled: bool = True):
     return query_df("SELECT max(match_date) AS d FROM matches", pooled=pooled)["d"].iloc[0]
 
 
-if __name__ == "__main__":
-    print("latest match:", get_latest_match_date())
-    print("Premier League teams:", len(get_teams("Premier League")))
-    print(get_recent_matches("Arsenal", 5))
-    print("feature frame:", get_matches_for_features().shape)
+def count_matches() -> int:
+    return int(query_df("SELECT count(*) AS n FROM matches")["n"].iloc[0])
 
-MATCH_COLS = [
-    "match_id", "div", "league", "season", "match_date", "home_team", "away_team",
-    "home_goals", "away_goals", "result", "ht_home_goals", "ht_away_goals", "ht_result",
-    "home_shots", "away_shots", "home_sot", "away_sot", "home_corners", "away_corners",
-    "home_fouls", "away_fouls", "home_yellows", "away_yellows", "home_reds", "away_reds",
-    "b365_home", "b365_draw", "b365_away",
-]
-TEXT_COLS = {"match_id", "div", "league", "season", "home_team", "away_team",
-             "result", "ht_result", "match_date"}
-ODDS_COLS = {"b365_home", "b365_draw", "b365_away"}
 
+# ---------- writing ----------
 
 def _py(v):
     """Plain Python value for psycopg2 (NaN -> None, numpy -> int/float, Timestamp -> date)."""
@@ -121,10 +138,6 @@ def _py(v):
     if isinstance(v, pd.Timestamp):
         return v.date()
     return v
-
-
-def count_matches() -> int:
-    return int(query_df("SELECT count(*) AS n FROM matches")["n"].iloc[0])
 
 
 def upsert_raw(rows: list) -> None:
@@ -159,3 +172,11 @@ def upsert_matches(df: pd.DataFrame) -> None:
     """
     with get_conn() as conn, conn.cursor() as cur:
         execute_values(cur, sql, rows, page_size=1000)
+
+
+if __name__ == "__main__":
+    print("latest match:", get_latest_match_date())
+    print("Premier League teams:", len(get_teams("Premier League")))
+    print("current Premier League teams:", get_current_teams("Premier League"))
+    print(get_recent_matches("Arsenal", 5))
+    print("feature frame:", get_matches_for_features().shape)

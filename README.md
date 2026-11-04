@@ -4,7 +4,7 @@ A match prediction system for the Premier League, La Liga, Bundesliga, Serie A a
 
 Live app: LIVE_APP_URL
 
-![Predictor page](Screenshot 2026-11-03 at 8.56.15 PM.png)
+![Predictor page](docs/predictor.png)
 
 ## Results
 

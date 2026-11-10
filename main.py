@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from db import get_current_teams, get_recent_matches, query_df
 from predict import predict_match
+from players import router as players_router
 
 LEAGUES = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"]
 
@@ -23,6 +24,9 @@ app.add_middleware(
     allow_methods=["GET"],
     allow_headers=["*"],
 )
+
+
+app.include_router(players_router)  # player stats endpoints, in players.py
 
 
 def records(df):

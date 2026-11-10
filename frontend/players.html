@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Player stats | Football Match Predictor</title>
+  <meta name="description" content="Top scorers, assists and clean sheets for the top five European leagues from 2012/13, split by league, Champions League and cups.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='9' y='5' width='14' height='22' rx='3' fill='%23f4cf47'/%3E%3C/svg%3E">
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="index.html">Match Predictor</a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="predict.html">Predictor</a>
+      <a href="standings.html">Standings</a>
+      <a href="players.html">Players</a>
+      <a href="https://github.com/GDP90132/premier-league-predictor" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <!-- TODO: replace gurinder-gill-82b1413b1/ with your own LinkedIn profile name -->
+      <a href="https://www.linkedin.com/in/gurinder-gill-82b1413b1/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <h1>Players</h1>
+    <p class="lede">Goals, assists and clean sheets for players in the top five leagues, 2012/13 to 2025/26.</p>
+
+    <div class="tabs" role="tablist" aria-label="Player stats views">
+      <button class="tab" type="button" role="tab" id="tab-leaders" aria-controls="panel-leaders" aria-selected="true">Leaders</button>
+      <button class="tab" type="button" role="tab" id="tab-search" aria-controls="panel-search" aria-selected="false">Find a player</button>
+    </div>
+
+    <section id="panel-leaders" role="tabpanel" aria-labelledby="tab-leaders">
+      <div class="panel filters three">
+        <div class="field">
+          <label for="stat">Stat</label>
+          <select id="stat">
+            <option value="goals">Goals</option>
+            <option value="assists">Assists</option>
+            <option value="clean_sheets">Clean sheets</option>
+            <option value="games">Games played</option>
+            <option value="minutes">Minutes played</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="competition">Competition</label>
+          <select id="competition"></select>
+        </div>
+        <div class="field">
+          <label for="season">Season</label>
+          <select id="season"></select>
+        </div>
+      </div>
+    </section>
+
+    <section id="panel-search" role="tabpanel" aria-labelledby="tab-search" hidden>
+      <form id="search-form" class="panel" autocomplete="off">
+        <div class="field">
+          <label for="search-input">Player name</label>
+          <input id="search-input" type="search" placeholder="For example Haaland" minlength="2" maxlength="60">
+        </div>
+        <p class="hint">Type at least two letters. Accents count, so search Ødegaard, not Odegaard.</p>
+      </form>
+      <ul id="search-results" class="result-list"></ul>
+    </section>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+
+    <section id="leaders-result" class="results" hidden>
+      <h2 id="leaders-title"></h2>
+      <div class="table-wrap">
+        <table class="table">
+          <caption class="sr-only">Player leaders</caption>
+          <thead id="leaders-head"></thead>
+          <tbody id="leaders-body"></tbody>
+        </table>
+      </div>
+      <p class="table-note">Select a player to see every season. Players who changed club are added together, and the clubs are listed under the name. Assists and clean sheets come from Transfermarkt: a clean sheet means a goalkeeper played 90 minutes and his team conceded no goals.</p>
+    </section>
+
+    <section id="career" class="results" hidden>
+      <h2 id="career-title"></h2>
+      <p id="career-summary" class="lede"></p>
+      <div class="table-wrap">
+        <table class="table">
+          <caption class="sr-only">Season by season stats</caption>
+          <thead id="career-head"></thead>
+          <tbody id="career-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="table-note">Seasons run from 2012/13 to 2025/26, so the current season is not included yet. Cups are the FA Cup, Copa del Rey, DFB-Pokal and Coppa Italia, plus the Champions League and Europa League. The EFL Cup and Coupe de France are not in the data.</p>
+  </main>
+
+  <footer class="site-footer">
+    <p>For information only, not betting advice. Data from football-data.co.uk and Transfermarkt.</p>
+    <p>
+      <a href="https://github.com/GDP90132/premier-league-predictor" target="_blank" rel="noopener noreferrer">Source code</a>
+      and
+      <a href="https://premier-league-predictor-138n.onrender.com/docs" target="_blank" rel="noopener noreferrer">API docs</a>
+    </p>
+  </footer>
+
+  <script src="common.js"></script>
+  <script src="players.js"></script>
+</body>
+</html>

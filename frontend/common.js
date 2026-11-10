@@ -50,3 +50,20 @@ function fillSelect(select, items) {
     select.appendChild(option);
   }
 }
+
+// The database stores seasons as 2122. Show them as 21/22.
+function formatSeason(code) {
+  const text = String(code);
+  return /^\d{4}$/.test(text) ? text.slice(0, 2) + "/" + text.slice(2) : text;
+}
+
+// Replace a dropdown's options with {value, label} pairs.
+function fillOptions(select, options) {
+  select.innerHTML = "";
+  for (const { value, label } of options) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    select.appendChild(option);
+  }
+}

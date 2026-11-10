@@ -19,12 +19,6 @@ function cell(text, className) {
   return td;
 }
 
-// The database stores seasons as 2122. Show them as 21/22.
-function formatSeason(code) {
-  const text = String(code);
-  return /^\d{4}$/.test(text) ? text.slice(0, 2) + "/" + text.slice(2) : text;
-}
-
 // +12, 0, -7
 function formatGoalDifference(value) {
   return value > 0 ? "+" + value : String(value);

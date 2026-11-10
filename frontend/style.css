@@ -55,8 +55,9 @@ select:focus-visible {
 .nav {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 16px;
+  gap: 12px 16px;
   max-width: 1080px;
   margin: 0 auto;
   padding: 22px 24px;
@@ -81,7 +82,7 @@ select:focus-visible {
   transform: rotate(8deg);
 }
 
-.nav-links { display: flex; gap: 22px; }
+.nav-links { display: flex; flex-wrap: wrap; gap: 6px 22px; }
 
 .nav-links a {
   color: var(--muted);
@@ -388,11 +389,90 @@ select {
 .site-footer a { color: var(--muted); }
 .site-footer a:hover { color: var(--ink); }
 
+/* ---------- standings page ---------- */
+
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 40px 24px 96px;
+}
+
+.page h1 {
+  margin: 0 0 8px;
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.page .lede { margin: 0 0 28px; color: var(--muted); }
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.filters .field { margin-bottom: 0; }
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.table th,
+.table td {
+  padding: 12px 10px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.table th {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-bottom: 1px solid var(--line);
+}
+
+.table td { border-top: 1px solid var(--line); }
+.table tbody tr:first-child td { border-top: 0; }
+.table tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+
+.table .pos { width: 1%; padding-left: 16px; color: var(--muted); }
+.table .team { width: 100%; text-align: left; }
+.table td.team { font-weight: 600; }
+.table .pts { padding-right: 16px; font-weight: 700; }
+
+.table-note { margin: 16px 2px 0; color: var(--muted); font-size: 0.9rem; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 /* ---------- small screens and reduced motion ---------- */
 
 @media (max-width: 560px) {
   .totals { grid-template-columns: 1fr; }
   .panel { padding: 20px; }
+  .filters { grid-template-columns: 1fr; gap: 14px; }
+  .nav-links { gap: 6px 16px; }
+  .table th,
+  .table td { padding: 9px 4px; font-size: 0.85rem; }
+  .table .pos { padding-left: 8px; }
+  .table .pts { padding-right: 8px; }
+  .table td.team { white-space: normal; line-height: 1.25; min-width: 96px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

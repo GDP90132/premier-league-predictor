@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Standings | Football Match Predictor</title>
+  <meta name="description" content="League tables for the top five European football leagues, calculated from match results back to 2005/06.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='9' y='5' width='14' height='22' rx='3' fill='%23f4cf47'/%3E%3C/svg%3E">
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="index.html">Match Predictor</a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="predict.html">Predictor</a>
+      <a href="standings.html">Standings</a>
+      <a href="https://github.com/GDP90132/premier-league-predictor" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <!-- TODO: replace YOUR-LINKEDIN-NAME with your own LinkedIn profile name -->
+      <a href="https://www.linkedin.com/in/gurinder-gill-82b1413b1/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <h1>Standings</h1>
+    <p class="lede">League tables for every season from 2005/06 to today, calculated from match results.</p>
+
+    <div class="panel filters">
+      <div class="field">
+        <label for="league">League</label>
+        <select id="league"></select>
+      </div>
+      <div class="field">
+        <label for="season">Season</label>
+        <select id="season"></select>
+      </div>
+    </div>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+
+    <section id="result" class="results" hidden>
+      <h2 id="table-title"></h2>
+      <div class="table-wrap">
+        <table class="table">
+          <caption class="sr-only">League table</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="pos" title="Position">#</th>
+              <th scope="col" class="team">Team</th>
+              <th scope="col" title="Played">P</th>
+              <th scope="col" title="Won">W</th>
+              <th scope="col" title="Drawn">D</th>
+              <th scope="col" title="Lost">L</th>
+              <th scope="col" title="Goals for">GF</th>
+              <th scope="col" title="Goals against">GA</th>
+              <th scope="col" title="Goal difference">GD</th>
+              <th scope="col" title="Points">Pts</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+      <p class="table-note">P played, W won, D drawn, L lost, GF goals for, GA goals against, GD goal difference, Pts points. Ties are ordered by goal difference, then goals scored. Some leagues use other tie-breakers, and points deductions are not included, so a few seasons may differ slightly from the official table.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>For information only, not betting advice. Data from football-data.co.uk.</p>
+    <p>
+      <a href="https://github.com/GDP90132/premier-league-predictor" target="_blank" rel="noopener noreferrer">Source code</a>
+      and
+      <a href="https://premier-league-predictor-138n.onrender.com/docs" target="_blank" rel="noopener noreferrer">API docs</a>
+    </p>
+  </footer>
+
+  <script src="common.js"></script>
+  <script src="standings.js"></script>
+</body>
+</html>

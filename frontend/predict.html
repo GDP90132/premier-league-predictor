@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Predict a match | Football Match Predictor</title>
+  <meta name="description" content="Pick a league and two teams to see win, draw and loss chances, plus expected goals and corners.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='9' y='5' width='14' height='22' rx='3' fill='%23f4cf47'/%3E%3C/svg%3E">
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="index.html">Match Predictor</a>
+    <nav class="nav-links" aria-label="Profile links">
+      <a href="https://github.com/GDP90132/premier-league-predictor" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <!-- TODO: replace YOUR-LINKEDIN-NAME with your own LinkedIn profile name -->
+      <a href="https://www.linkedin.com/in/gurinder-gill-82b1413b1/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </nav>
+  </header>
+
+  <main class="predict">
+    <h1>Predict a match</h1>
+    <p class="lede">Pick a league, then a home team and an away team. Predictions use each team's last five matches.</p>
+
+    <form id="predict-form" class="panel">
+      <div class="field">
+        <label for="league">League</label>
+        <select id="league"></select>
+      </div>
+      <div class="field">
+        <label for="home">Home team</label>
+        <select id="home"></select>
+      </div>
+      <div class="field">
+        <label for="away">Away team</label>
+        <select id="away"></select>
+      </div>
+      <button type="submit" id="predict-btn" class="btn btn-primary btn-block" disabled>Predict</button>
+    </form>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+
+    <section id="result" class="results" hidden>
+      <h2 id="result-title"></h2>
+
+      <div class="outcome">
+        <div>
+          <div class="outcome-head"><span class="outcome-label" id="label-home"></span><span class="outcome-pct" id="p-home"></span></div>
+          <div class="bar-track"><div class="bar-fill" id="bar-home"></div></div>
+        </div>
+        <div>
+          <div class="outcome-head"><span class="outcome-label" id="label-draw"></span><span class="outcome-pct" id="p-draw"></span></div>
+          <div class="bar-track"><div class="bar-fill" id="bar-draw"></div></div>
+        </div>
+        <div>
+          <div class="outcome-head"><span class="outcome-label" id="label-away"></span><span class="outcome-pct" id="p-away"></span></div>
+          <div class="bar-track"><div class="bar-fill" id="bar-away"></div></div>
+        </div>
+      </div>
+
+      <div class="totals">
+        <div class="total-card panel">
+          <h3>Total goals</h3>
+          <p class="expected">Expected <strong id="goals-expected"></strong></p>
+          <ul class="lines" id="goals-lines"></ul>
+        </div>
+        <div class="total-card panel">
+          <h3>Total corners</h3>
+          <p class="expected">Expected <strong id="corners-expected"></strong></p>
+          <ul class="lines" id="corners-lines"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>For information only, not betting advice. Data from football-data.co.uk.</p>
+    <p>
+      <a href="https://github.com/GDP90132/premier-league-predictor" target="_blank" rel="noopener noreferrer">Source code</a>
+      and
+      <a href="https://premier-league-predictor-138n.onrender.com/docs" target="_blank" rel="noopener noreferrer">API docs</a>
+    </p>
+  </footer>
+
+  <script src="predictor.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Football Match Predictor</title>
+  <meta name="description" content="Predicts win, draw or loss, plus expected goals and corners, for the top five European football leagues.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='9' y='5' width='14' height='22' rx='3' fill='%23f4cf47'/%3E%3C/svg%3E">
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="index.html">Match Predictor</a>
+    <nav class="nav-links" aria-label="Profile links">
+      <a href="https://github.com/GDP90132/premier-league-predictor" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <!-- TODO: replace YOUR-LINKEDIN-NAME with your own LinkedIn profile name -->
+      <a href="https://www.linkedin.com/in/YOUR-LINKEDIN-NAME" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Football Match Predictor</h1>
+    <p>Twenty years of results, one prediction.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="predict.html">Try the predictor</a>
+    </div>
+  </section>
+
+  <main class="content">
+    <section class="section" aria-labelledby="accuracy-title">
+      <h2 id="accuracy-title">How accurate is it?</h2>
+      <p class="lede">Tested on 3,873 matches the model never saw, from August 2024 to November 2026.</p>
+      <ul class="bars">
+        <li>
+          <div class="bar-head"><span>Always pick the home team</span><span class="bar-value">43.2%</span></div>
+          <div class="bar-track"><div class="bar-fill grow" style="--w: 43.2%"></div></div>
+          <div class="bar-sub">Log loss 1.075</div>
+        </li>
+        <li>
+          <div class="bar-head"><span>This model</span><span class="bar-value">49.3%</span></div>
+          <div class="bar-track"><div class="bar-fill grow top" style="--w: 49.3%"></div></div>
+          <div class="bar-sub">Log loss 1.018</div>
+        </li>
+        <li>
+          <div class="bar-head"><span>Bet365 bookmaker odds</span><span class="bar-value">53.6%</span></div>
+          <div class="bar-track"><div class="bar-fill grow" style="--w: 53.6%"></div></div>
+          <div class="bar-sub">Log loss 0.970</div>
+        </li>
+      </ul>
+      <p class="note">The model beats the simple baseline but not the bookmakers, who also know about lineups and injuries. For log loss, lower is better. Accuracy is similar in all five leagues, from 47.8% to 51.2%.</p>
+    </section>
+
+    <section class="section" aria-labelledby="data-title">
+      <h2 id="data-title">Twenty years of results</h2>
+      <ul class="points">
+        <li>More than 38,000 matches, from 2005/06 to today</li>
+        <li>Premier League, La Liga, Bundesliga, Serie A and Ligue 1</li>
+        <li>Stored in a PostgreSQL database</li>
+        <li>New results are added automatically, without duplicates</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="how-title">
+      <h2 id="how-title">How it works</h2>
+      <ul class="points">
+        <li>Each team is described by its last five matches: points, goals, shots, corners and days of rest</li>
+        <li>Every number comes only from games played before the match, so the model never sees the result</li>
+        <li>Trained on 33,204 matches before July 2024, then tested only on later games, never on a random mix</li>
+        <li>Logistic regression predicts the outcome. It did as well as random forest and gradient boosting, and it is the easiest to explain</li>
+        <li>Bookmaker odds are only a benchmark. They are never fed into the model</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="totals-title">
+      <h2 id="totals-title">Goals and corners</h2>
+      <ul class="points">
+        <li>Poisson regression estimates the expected total for each match</li>
+        <li>That total is turned into the chance of going over each line, such as 2.5 goals</li>
+        <li>It beats a plain average on every line, but only by a small margin. Recent form says a little about totals, not a lot</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="limits-title">
+      <h2 id="limits-title">What it can't do</h2>
+      <ul class="points">
+        <li>It only sees recent results, with no lineups, injuries or transfers</li>
+        <li>It almost never picks a draw, even though draws are about a quarter of results</li>
+        <li>Its home-win chances run a little high, by 1.5 to 3.5 points</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="stack-title">
+      <h2 id="stack-title">Built with</h2>
+      <ul class="stack">
+        <li>Python</li>
+        <li>pandas</li>
+        <li>scikit-learn</li>
+        <li>PostgreSQL</li>
+        <li>Neon</li>
+        <li>FastAPI</li>
+        <li>Render</li>
+        <li>Netlify</li>
+        <li>JavaScript</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>For information only, not betting advice. Data from football-data.co.uk.</p>
+    <p>
+      <a href="https://github.com/GDP90132/premier-league-predictor" target="_blank" rel="noopener noreferrer">Source code</a>
+      and
+      <a href="https://premier-league-predictor-138n.onrender.com/docs" target="_blank" rel="noopener noreferrer">API docs</a>
+    </p>
+  </footer>
+
+  <script>
+    // The accuracy bars fill in once, when they scroll into view.
+    const fills = document.querySelectorAll(".bar-fill.grow");
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("go");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.4 });
+      fills.forEach((fill) => observer.observe(fill));
+    } else {
+      fills.forEach((fill) => fill.classList.add("go"));
+    }
+  </script>
+</body>
+</html>

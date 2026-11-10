@@ -22,6 +22,7 @@ const careerTitle = document.getElementById("career-title");
 const careerSummary = document.getElementById("career-summary");
 const careerHead = document.getElementById("career-head");
 const careerBody = document.getElementById("career-body");
+const expandAllButton = document.getElementById("expand-all");
 
 const STAT_NAMES = {
   goals: "goals", assists: "assists", clean_sheets: "clean sheets", games: "games played", minutes: "minutes played",
@@ -200,12 +201,38 @@ seasonSelect.addEventListener("change", loadLeaders);
 
 // ---------- player career ----------
 
+function statCells(keeper, values, rowKind) {
+  // the number cells shared by season rows and competition rows
+  const cells = [
+    cell(numberText(values.games)),
+    cell(numberText(values.minutes), "hide-sm"),
+  ];
+  if (keeper) {
+    cells.push(cell(numberText(values.clean_sheets), "key"));
+  } else {
+    cells.push(cell(numberText(values.goals), "key"));
+    cells.push(cell(numberText(values.assists), "key"));
+  }
+  return cells;
+}
+
+function setSeasonOpen(button, children, open) {
+  button.setAttribute("aria-expanded", String(open));
+  for (const row of children) row.hidden = !open;
+}
+
+function updateExpandAllLabel() {
+  const buttons = [...careerBody.querySelectorAll(".toggle")];
+  const allOpen = buttons.length > 0 && buttons.every((b) => b.getAttribute("aria-expanded") === "true");
+  expandAllButton.textContent = allOpen ? "Collapse all seasons" : "Expand all seasons";
+}
+
 function showCareerRows(data) {
   const keeper = data.player.position === "Goalkeeper";
 
   const columns = [
-    { label: "Season" },
-    { label: "Competition", className: "team" },
+    { label: "Season", className: "season-head" },
+    { label: "Club and competition", className: "team" },
     { label: "Gm", title: "Games played" },
     { label: "Min", title: "Minutes played", className: "hide-sm" },
   ];
@@ -218,38 +245,91 @@ function showCareerRows(data) {
   careerHead.innerHTML = "";
   careerHead.appendChild(headerRow(columns));
 
-  careerBody.innerHTML = "";
-  let games = 0, goals = 0, assists = 0, cleanSheets = 0;
+  // group the rows by season, keeping the order the API sent (newest season first)
+  const bySeason = new Map();
   for (const r of data.rows) {
-    games += r.games;
-    goals += r.goals;
-    assists += r.assists;
-    cleanSheets += r.clean_sheets || 0;
-
-    const tr = document.createElement("tr");
-    tr.appendChild(cell(formatSeason(r.season), "pos"));
-
-    const compCell = el("td", r.competition, "team");
-    compCell.appendChild(el("span", r.club, "sub"));
-    tr.appendChild(compCell);
-
-    tr.appendChild(cell(numberText(r.games)));
-    tr.appendChild(cell(numberText(r.minutes), "hide-sm"));
-    if (keeper) {
-      tr.appendChild(cell(numberText(r.clean_sheets), "key"));
-    } else {
-      tr.appendChild(cell(numberText(r.goals), "key"));
-      tr.appendChild(cell(numberText(r.assists), "key"));
-    }
-    careerBody.appendChild(tr);
+    if (!bySeason.has(r.season)) bySeason.set(r.season, []);
+    bySeason.get(r.season).push(r);
   }
 
-  const seasons = data.rows.map((r) => r.season).sort();
+  careerBody.innerHTML = "";
+  let games = 0, goals = 0, assists = 0, cleanSheets = 0;
+
+  for (const [season, rows] of bySeason) {
+    const total = { games: 0, minutes: 0, goals: 0, assists: 0, clean_sheets: 0 };
+    for (const r of rows) {
+      total.games += r.games;
+      total.minutes += r.minutes;
+      total.goals += r.goals;
+      total.assists += r.assists;
+      total.clean_sheets += r.clean_sheets || 0;
+    }
+    games += total.games; goals += total.goals; assists += total.assists; cleanSheets += total.clean_sheets;
+
+    const clubs = [...new Set(rows.map((r) => r.club))].join(", ");
+
+    // the season row: totals across every competition
+    const seasonRow = document.createElement("tr");
+    seasonRow.className = "season-row";
+
+    const seasonCell = el("td", null, "season");
+    const toggle = el("button", null, "toggle");
+    toggle.type = "button";
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Show the " + rows.length + (rows.length === 1 ? " competition" : " competitions") + " for " + formatSeason(season));
+    toggle.appendChild(el("span", null, "chev"));
+    toggle.appendChild(document.createTextNode(formatSeason(season)));
+    seasonCell.appendChild(toggle);
+    seasonRow.appendChild(seasonCell);
+
+    const clubCell = el("td", clubs, "team");
+    clubCell.appendChild(el("span", rows.length + (rows.length === 1 ? " competition" : " competitions"), "sub"));
+    seasonRow.appendChild(clubCell);
+    for (const c of statCells(keeper, total)) seasonRow.appendChild(c);
+    careerBody.appendChild(seasonRow);
+
+    // one row per competition, hidden until the arrow is clicked
+    const children = [];
+    for (const r of rows) {
+      const tr = document.createElement("tr");
+      tr.className = "comp-row";
+      tr.hidden = true;
+      tr.appendChild(el("td"));
+      const nameCell = el("td", r.competition, "team");
+      nameCell.appendChild(el("span", r.club, "sub"));
+      tr.appendChild(nameCell);
+      for (const c of statCells(keeper, r)) tr.appendChild(c);
+      careerBody.appendChild(tr);
+      children.push(tr);
+    }
+
+    toggle.addEventListener("click", () => {
+      setSeasonOpen(toggle, children, toggle.getAttribute("aria-expanded") !== "true");
+      updateExpandAllLabel();
+    });
+  }
+  updateExpandAllLabel();
+
+  const seasons = [...bySeason.keys()].sort();
   const span = seasonRange(seasons[0], seasons[seasons.length - 1]);
   careerSummary.textContent = keeper
     ? numberText(cleanSheets) + " clean sheets in " + numberText(games) + " games, " + span + "."
     : numberText(goals) + " goals and " + numberText(assists) + " assists in " + numberText(games) + " games, " + span + ".";
 }
+
+expandAllButton.addEventListener("click", () => {
+  const buttons = [...careerBody.querySelectorAll(".toggle")];
+  const open = !buttons.every((b) => b.getAttribute("aria-expanded") === "true");
+  for (const button of buttons) {
+    const seasonRow = button.closest("tr");
+    const children = [];
+    for (let row = seasonRow.nextElementSibling; row && row.classList.contains("comp-row"); row = row.nextElementSibling) {
+      children.push(row);
+    }
+    setSeasonOpen(button, children, open);
+  }
+  updateExpandAllLabel();
+});
 
 async function showCareer(playerId, name) {
   const myRequest = ++careerRequest;

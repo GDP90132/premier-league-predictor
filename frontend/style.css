@@ -546,6 +546,50 @@ input[type="search"]::placeholder { color: var(--muted); }
 .table th.key { color: var(--ink); }
 .table td.key { color: var(--card); font-weight: 700; }
 
+.expand-all {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.expand-all:hover { color: var(--ink); }
+
+.table td.season { white-space: nowrap; padding-left: 12px; }
+.table th.season-head { text-align: left; padding-left: 12px; }
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px 4px 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.toggle:hover { color: var(--ink); }
+
+.chev {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+}
+
+.toggle[aria-expanded="true"] .chev { transform: rotate(45deg); }
+
+.table tr.season-row td.team { font-weight: 600; }
+.table tr.comp-row td { background: rgba(0, 0, 0, 0.22); }
+.table tr.comp-row td.team { padding-left: 24px; font-weight: 500; }
+.table tr.comp-row td.key { color: var(--ink); font-weight: 500; }
+
 .lede + .table-wrap { margin-top: 0; }
 #career { margin-top: 48px; }
 
@@ -574,4 +618,5 @@ input[type="search"]::placeholder { color: var(--muted); }
   .js .bar-fill.grow { transition: none; }
   .status.loading::before { animation-duration: 2.4s; }
   .btn { transition: none; }
+  .chev { transition: none; }
 }

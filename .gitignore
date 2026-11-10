@@ -1,4 +1,5 @@
 .env
 api.env
 data/
-__pychache__/
+__pycache__/
+*.pyc

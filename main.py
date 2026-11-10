@@ -18,7 +18,7 @@ app = FastAPI(title="Football Predictor API")
 # "*" is fine while building. Before deploying, replace it with your frontend's URL.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://helpful-fenglisu-a8bc69.netlify.app","http://127.0.0.1:5500",
+    allow_origins=["https://football-match-predictor.netlify.app","http://127.0.0.1:5500",
         "http://localhost:5500", ],
     allow_methods=["GET"],
     allow_headers=["*"],

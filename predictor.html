@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Football Match Predictor</title>
+  <style>
+    body { font-family: sans-serif; max-width: 640px; margin: 24px auto; padding: 0 16px; line-height: 1.4; }
+    label { display: block; margin-bottom: 12px; font-weight: bold; }
+    select { display: block; width: 100%; padding: 6px; margin-top: 4px; font-size: 16px; }
+    button { padding: 8px 16px; font-size: 16px; cursor: pointer; }
+    button:disabled { cursor: wait; opacity: 0.6; }
+    #status { min-height: 1.4em; }
+    #status.error { color: #b00020; font-weight: bold; }
+    .note { color: #555; font-size: 14px; }
+    table { border-collapse: collapse; margin: 8px 0 16px; }
+    th, td { border: 1px solid #ccc; padding: 4px 10px; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>Football Match Predictor</h1>
+  <p class="note">Uses each team's last 5 matches. For information only, not betting advice.</p>
+
+  <label>League
+    <select id="league"></select>
+  </label>
+  <label>Home team
+    <select id="home"></select>
+  </label>
+  <label>Away team
+    <select id="away"></select>
+  </label>
+  <button id="predict-btn">Predict</button>
+
+  <p id="status"></p>
+
+  <section id="result" hidden>
+    <h2 id="result-title"></h2>
+
+    <h3>Outcome</h3>
+    <table>
+      <tr><th id="label-home"></th><th>Draw</th><th id="label-away"></th></tr>
+      <tr><td id="p-home"></td><td id="p-draw"></td><td id="p-away"></td></tr>
+    </table>
+
+    <h3>Total goals (expected <span id="goals-expected"></span>)</h3>
+    <table>
+      <thead><tr><th>Line</th><th>Chance</th></tr></thead>
+      <tbody id="goals-lines"></tbody>
+    </table>
+
+    <h3>Total corners (expected <span id="corners-expected"></span>)</h3>
+    <table>
+      <thead><tr><th>Line</th><th>Chance</th></tr></thead>
+      <tbody id="corners-lines"></tbody>
+    </table>
+  </section>
+
+  <script src="predictor.js"></script>
+</body>
+</html>
